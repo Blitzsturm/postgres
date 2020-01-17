@@ -129,7 +129,7 @@ Use cursors if you need to throttle the amount of rows being returned from a que
 
 await sql.cursor`
   select * from generate_series(1,4) as x
-`.cursor((row, cancel) => {
+`.cursor(async (row, cancel) => {
   // row = { x: 1 }
   http.request('https://example.com/wat', { row })
 })
@@ -144,7 +144,7 @@ A single row will be returned by default, but you can also request batches by se
 
 await sql.cursor`
   select * from generate_series(1,1000) as x
-`.cursor(10, (rows, cancel) => {
+`.cursor(10, async (rows, cancel) => {
   // rows = [{ x: 1 }, { x: 2 }, ... ]
   await Promise.all(rows.map(row =>
     http.request('https://example.com/wat', { row })
